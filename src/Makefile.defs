@@ -932,7 +932,7 @@ ifeq ($(use_fast_lock), yes)
 	found_lock_method=yes
 endif
 
-CFLAGS=-g
+CFLAGS=-ggdb
 LDFLAGS=-g
 C_INCLUDES=
 # setting CFLAGS

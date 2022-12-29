@@ -1,0 +1,366 @@
+    1* 
+    2  cd root/
+    3  ls
+    4  mkdir log
+    5  ls
+    6  rm log/ -rf
+    7  mkdir log
+    8  ll
+    9  cd log/
+   10  vim log.host
+   11  apt-get update
+   12  apt-get install vim
+   13  ls
+   14  vim log
+   15  ll
+   16  ls
+   17  gi
+   18  git
+   19  yum install git
+   20  apt-get install git
+   21  ssh-keygen
+   22  ll
+   23  ls
+   24  cd ../
+   25  ll
+   26  ls
+   27  git clone https://kgithub.com/kamailio/kamailio.git
+   28  ll
+   29  ls
+   30  cd kamailio/
+   31  ll
+   32  git remote add origin git@github.com:YeKYLI/kamailio.git
+   33  git remote rm origin
+   34  git remote add origin git@github.com:YeKYLI/kamailio.git
+   35  git push origin master
+   36  ls
+   37  cd ../
+   38  ls
+   39  ll
+   40  cd .ssh/id_rsa
+   41  cat .ssh/id_rsa.pub 
+   42  cd kamailio/
+   43  git push origin master
+   44  ls
+   45  cd doc/
+   46  ls
+   47  cd tutorials/
+   48  ls
+   49  vim cfg.txt 
+   50  cd ../
+   51  ls
+   52  vim README.md 
+   53  cd tutorials/
+   54  ll
+   55  :q!
+   56  ls
+   57  cd ../
+   58  ls
+   59  mkdir ims
+   60  ll
+   61  cd ims/
+   62  ll
+   63  vim build.log
+   64  ls
+   65  vim build.log 
+   66  apt-get install gcc g++
+   67  apt-get install flex
+   68  apt-get install bison
+   69  apt-get install libmysqlclient-dev
+   70  apt-get install make autoconf pkg-config
+   71  ll
+   72  vim build.log 
+   73  apt-get install libssl-dev
+   74  apt-get install libcurl4-openssl-dev
+   75  apt-get install libxml2-dev
+   76  apt-get install libpcre3-dev
+   77  mkdir /var/run/kamailio/
+   78  ll /var/run/kamailio/
+   79  ld
+   80  ls
+   81  vim build.log 
+   82  cd ../../
+   83  ls
+   84  make proper
+   85  make include_modules="ims_usrloc_pcscf ims_registrar_pcscf dialog_ng xmlrpc \ 
+  db_mysql cdp cdp_avp ims_icscf \ 
+  presence ims_usrloc_scscf ims_registrar_scscf ims_auth ims_isc ims_charging" cfg
+   86  make include_modules="ims_usrloc_pcscf ims_registrar_pcscf dialog_ng xmlrpc db_mysql cdp cdp_avp ims_icscf presence ims_usrloc_scscf ims_registrar_scscf ims_auth ims_isc ims_charging" cfg
+   87  make all
+   88  ll src/modules | grep dia
+   89  make include_modules="ims_usrloc_pcscf ims_registrar_pcscf ims_dialog_ng xmlrpc db_mysql cdp cdp_avp ims_icscf presence ims_usrloc_scscf ims_registrar_scscf ims_auth ims_isc ims_charging" cfg
+   90  make install
+   91  make all
+   92  make proper
+   93  make include_modules="ims_usrloc_pcscf ims_registrar_pcscf ims_dialog_ng xmlrpc db_mysql cdp cdp_avp ims_icscf presence ims_usrloc_scscf ims_registrar_scscf ims_auth ims_isc ims_charging" cfg
+   94  make all
+   95  ll src/modules | grep dia
+   96  make include_modules="ims_usrloc_pcscf ims_registrar_pcscf dialog ims_dialog xmlrpc db_mysql cdp cdp_avp ims_icscf presence ims_usrloc_scscf ims_registrar_scscf ims_auth ims_isc ims_charging" cfg
+   97  make proper
+   98  make include_modules="ims_usrloc_pcscf ims_registrar_pcscf dialog ims_dialog xmlrpc db_mysql cdp cdp_avp ims_icscf presence ims_usrloc_scscf ims_registrar_scscf ims_auth ims_isc ims_charging" cfg
+   99  make all
+  100  make install
+  101  cd /usr/local/sbin/
+  102  ll
+  103  cd ../etc/kamailio/
+  104  ll
+  105  vim kamctlrc.sample 
+  106  vim kamctlrc
+  107  kamdbctl create
+  108  mysql
+  109* 
+  110* 
+  111  kamdbctl create
+  112  apt-get install mysql-server
+  113  mysql
+  114  /etc/init.d/mysql
+  115  /etc/init.d/mysql start
+  116  mysql
+  117  kamdbctl create
+  118  vim kamctlrc
+  119  kamdbctl create
+  120  ls
+  121  kamailio 
+  122  ps -ef| grep ka
+  123  ls
+  124  pwd
+  125  ll
+  126  mv kamailio.cfg kamailio.cfg.backup
+  127  ll
+  128  cd /root/kamailio/
+  129  ls
+  130  cd misc/
+  131  ls
+  132  cd examples/
+  133  ls
+  134  cd ims/
+  135  ls
+  136  cd pcscf/
+  137  ls
+  138  cp * /usr/local/etc/kamailio/ -rf
+  139  ll
+  140  ps- ef | grep ka
+  141  ps -ef | grep ka
+  142  kamailio stop
+  143  ps -ef | grep ka
+  144  kamctl stop
+  145  ps -ef | grep ka
+  146  kamailio stop
+  147  ps -ef | grep ka
+  148  ps -ef | grep ka | awk '{ print $2 } '
+  149  ps -ef | grep ka | awk '{ print $2 } '| xargs kill -9
+  150  ps -ef | grep ka | awk '{ print $2 } '
+  151  ls
+  152  kamailio start
+  153  ps -ef | grep ka | awk '{ print $2 } '
+  154  kamailio 
+  155  cd /usr/local/etc/
+  156  ls
+  157  cd kamailio/
+  158  ll
+  159  vim kamailio.cfg
+  160  kamailio 
+  161  ps -ef | grep ka | awk '{ print $2 } '
+  162  ps -ef | grep ka
+  163  fg
+  164  ll
+  165  vim kamailio.cfg
+  166  ll
+  167  mv pcscf.cfg.sample pcscf.cfg
+  168  vim pcscf.cfg 
+  169  kamailio 
+  170  kamailio  -DD -E
+  171  make include_modules="ims_usrloc_pcscf ims_registrar_pcscf ims_ipsec_pcscf dialog ims_dialog xmlrpc db_mysql cdp cdp_avp ims_icscf presence ims_usrloc_scscf ims_registrar_scscf ims_auth ims_isc ims_charging" cfg
+  172  ls
+  173  cd /home/
+  174  ll
+  175  cd /root/kamailio/
+  176  ls
+  177  make proper
+  178  make include_modules="ims_usrloc_pcscf ims_registrar_pcscf ims_ipsec_pcscf dialog ims_dialog xmlrpc db_mysql cdp cdp_avp ims_icscf presence ims_usrloc_scscf ims_registrar_scscf ims_auth ims_isc ims_charging" cfg
+  179  make all
+  180  cd ../
+  181  ls
+  182  git clone git clone git://git.netfilter.org/libmnl
+  183  ls
+  184  cd libmnl/
+  185  ls
+  186  sh autogen.sh 
+  187  apt-get install lib-tools
+  188  sh autogen.sh 
+  189  apt-get install libtool
+  190  ll
+  191  ./configure 
+  192  sh autogen.sh 
+  193  ./configure 
+  194  make
+  195  make install
+  196  ll
+  197  cd ../kamailio/
+  198  make all
+  199  make install 
+  200  ll
+  201  ll /usr/local/etc/kamailio/
+  202  kamailio 
+  203  ps -ef | grep ka
+  204  kamailio -DD -E
+  205  ll
+  206  vim  /usr/local/etc/kamailio/kamailio.cfg
+  207  ll /usr/local/lib64/kamailio/modules/ | grep cs
+  208  kamailio -DD -E
+  209  cd /root/libmnl/
+  210  ls
+  211  cd doxygen/
+  212  cd ../
+  213  ls
+  214  cd examples/
+  215  ls
+  216  cd ../
+  217  ls
+  218  ll /usr/lib64/
+  219  ll /usr/lib/
+  220  find  /usr/lib/ -name "libmnl*"
+  221  ls
+  222  cd include/
+  223  ls
+  224  cd limn
+  225  cd libmnl/
+  226  ls
+  227  ll /usr/local/lib64/kamailio/modules/ | grep cs
+  228  kamailio -DD -E
+  229  ls
+  230  lcd ../
+  231  cd ../
+  232  ls
+  233  cd ../
+  234  ls
+  235  cd src/
+  236  ls
+  237  cd ../
+  238  ls
+  239  cd /lib64
+  240  ll
+  241  cd ../lib
+  242  ls
+  243  find  /usr/lib/ -name "libmnl*"
+  244  find  .  -name "libmnl*"
+  245  ls
+  246  cd ../
+  247  ;s
+  248  ls
+  249  cd /usr/
+  250  ls
+  251  cd lib
+  252  ls
+  253  ll | grep mn
+  254  cd /root/libmnl/
+  255  ls
+  256  cd /usr/include/
+  257  cd /usr/include/ | grep libm
+  258  cd /usr/local/include/
+  259  ls
+  260  cd libmnl/libmnl.h 
+  261  cd ../
+  262  ls
+  263  cd lib
+  264  ll
+  265  ll pkgconfig/
+  266  cp *mn*  /usr/local/lib64/kamailio/modules/
+  267  kamailio -DD -E
+  268  ll  /usr/local/lib64/kamailio/modules/ | grep mn
+  269  cd  /usr/local/lib64/kamailio/modules/ 
+  270  ll
+  271  ll | grep mn
+  272  file libmnl.so.00
+  273  file libmnl.so.0
+  274  fike xlog.so 
+  275  file xlog.so 
+  276  kamailio -DD -E
+  277  cd ../
+  278  ls
+  279  cd ../
+  280  ls
+  281  cd kamailio/
+  282  ls
+  283  cd ../
+  284  ls
+  285  cd ../
+  286  ls
+  287  cd lib
+  288  ls
+  289  kamailio --D -E
+  290  kamailio -DD -E
+  291  echo LD_LIBRART_PATH
+  292  echo $LD_LIBRART_PATH
+  293  LD_LIBRARY_PATH=c$LD_LIBRART_PATH
+  294  pwd
+  295  LD_LIBRARY_PATH=/usr/local/lib/
+  296  kamailio -DD -E
+  297  cd /usr/local/etc/kamailio/
+  298  ll
+  299  vim kamailio.cfg
+  300  kamailio 
+  301  kamailio -DD -E
+  302  pwd
+  303  ll /usr/local/lib64/kamailio/modules/
+  304  pwd
+  305  ll /usr/local/lib64/kamailio/modules/
+  306  ls
+  307  vim kamailio.cfg
+  308  kamailio -DD -E
+  309* 
+  310  vim kamailio.cfg
+  311  kamailio -DD -E
+  312  ldconfig
+  313  kamailio -DD -E
+  314  ps -ef | grep ka
+  315  ll
+  316  vim pcscf.cfg 
+  317  ll
+  318  mc pcscf.xml.sample pcscf.xml
+  319  mv pcscf.xml.sample pcscf.xml
+  320  ls
+  321  ll
+  322  mc dispatcher.list.sample dispatcher.list
+  323  mv dispatcher.list.sample dispatcher.list
+  324  kamailio -DD -E
+  325  cd /usr/local/sbin/
+  326  ll
+  327  kamcmd 
+  328  ls
+  329  cd ../
+  330  ll
+  331  cd etc/
+  332  ls
+  333  cd kamailio/
+  334  ll
+  335  vim kamailio.cfg
+  336  kamailio -DD -E
+  337  vim kamailio.cfg
+  338  ll
+  339  mkdir /var/run/kamailio_pcscf
+  340  cdmod 777  /var/run/kamailio_pcscf
+  341  ll /var/run/
+  342  vim kamailio.cfg
+  343  mkdir /etc/kamailio_pcscf
+  344  ll
+  345  cp * /etc/kamailio_pcscf/
+  346  cp * /etc/kamailio_pcscf/ -rf
+  347  ll
+  348  kamailio -DD -E
+  349  ps -ef | grep ka
+  350  ll
+  351  cd /usr/local/
+  352  ls
+  353  cd /root/kamailio/
+  354  ls
+  355  cd doc/
+  356  ls
+  357  cd tutorials/
+  358  ls
+  359  cd ../
+  360  ls
+  361  cd ims/
+  362  ls
+  363  hisrory > cmd.log
+  364  history > cmd.log

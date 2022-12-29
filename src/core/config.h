@@ -48,7 +48,7 @@
 #define TLS_CA_PATH 0			/*!< no CA directory path by default */
 #define TLS_CRL_FILE 0 /*!< no CRL by default */
 
-#define CHILD_NO    8			/*!< default number of child processes started */
+#define CHILD_NO    1			/*!< default number of child processes started */
 
 #define RT_NO 2 			/*!< routing tables number */
 #define FAILURE_RT_NO RT_NO 		/*!< on_failure routing tables number */

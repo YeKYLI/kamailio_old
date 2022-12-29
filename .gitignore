@@ -53,3 +53,7 @@ libiname.lst
 # compiling tools files
 .clangd
 compile_commands.json
+
+# build
+
+build/*
