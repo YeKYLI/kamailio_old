@@ -120,6 +120,99 @@ int sl_get_reply_totag(struct sip_msg *msg, str *totag)
 	return 1;
 }
 
+int magicAddStatusLine(struct sip_msg *msg, void* p)
+{
+	int len = 0;
+
+	memcpy(p, "SIP/2.0 200 OK", strlen("SIP/2.0 200 OK")); // add status line
+	p += strlen("SIP/2.0 200 OK");
+	len += strlen("SIP/2.0 200 OK");
+
+	memcpy(p, CRLF, CRLF_LEN );
+	p += CRLF_LEN;
+	len += CRLF_LEN;
+
+	return len;
+}
+
+int magicAddEndHeaderLine(struct sip_msg *msg, void* p)
+{
+	int len = 0;
+
+	memcpy(p, CRLF, CRLF_LEN );
+	p += CRLF_LEN;
+	len += CRLF_LEN;
+
+	memcpy(p, CRLF, CRLF_LEN );
+	p += CRLF_LEN;
+	len += CRLF_LEN;
+
+	memcpy(p, CRLF, CRLF_LEN );
+	p += CRLF_LEN;
+	len += CRLF_LEN;
+
+	return len;
+}
+
+int magicAddFrom(struct sip_msg *msg, void* p)
+{
+	int len = 0;
+
+	memcpy(p, msg->from->name.s, msg->from->name.len);
+	p += msg->from->name.len;
+	len += msg->from->name.len;
+
+	memcpy(p, ": ", 2);
+	p += 2;
+	len += 2;
+
+	memcpy(p, msg->from->body.s, msg->from->body.len);
+	p += msg->from->body.len;
+	len += msg->from->body.len;
+
+	memcpy(p, "\r\n", 2 );
+	p+=2;
+	len += 2;
+
+	return len;
+}
+
+int magicAddTo(struct sip_msg *msg, void* p)
+{
+	int len = 0;
+/*
+
+	memcpy(p, msg->to->name.s, msg->to->len);
+	p = p + msg->to->len;
+	len = (len + msg->to->len);
+
+	memcpy(p, CRLF, CRLF_LEN );
+	p += CRLF_LEN;
+	len += CRLF_LEN;
+
+
+	return len;
+
+*/
+	memcpy(p, msg->to->name.s, msg->to->name.len);
+	p += msg->to->name.len;
+	len += msg->to->name.len;
+
+	memcpy(p, ": ", 2);
+	p += 2;
+	len += 2;
+
+	memcpy(p, msg->to->body.s, msg->to->body.len);
+	p += msg->to->body.len;
+	len += msg->to->body.len;
+
+	memcpy(p, CRLF, CRLF_LEN );
+	p+=CRLF_LEN;
+	len += CRLF_LEN;
+
+	return len;
+
+}
 
 /*!
  * helper function for stateless reply
@@ -171,7 +264,7 @@ int sl_reply_helper(struct sip_msg *msg, int code, char *reason, str *tag)
 
 	/* add a to-tag if there is a To header field without it */
 	// begin our magic
-	///*
+	/*
 	if ( code>=180 &&
 		(msg->to || (parse_headers(msg,HDR_TO_F, 0)!=-1 && msg->to))
 		&& (get_to(msg)->tag_value.s==0 || get_to(msg)->tag_value.len==0) )
@@ -192,7 +285,11 @@ int sl_reply_helper(struct sip_msg *msg, int code, char *reason, str *tag)
 		LM_DBG("response building failed\n");
 		goto error;
 	}
-	//*/
+	*/
+
+	// begin our magic
+	// TEST CODE
+/*
 	void* temp = malloc(1000);
 	void* p = temp;
 	int len = 0;
@@ -205,7 +302,38 @@ int sl_reply_helper(struct sip_msg *msg, int code, char *reason, str *tag)
 	
 	buf.s = temp;
 	buf.len = strlen(temp);
+*/
 
+
+	void* temp = malloc(1000);
+	void* p = temp;
+	int len = 0;
+
+	//if (msg->first_line.u.request.method.len == 6) // INVITE
+	//{
+	int ieLen = magicAddStatusLine(msg, p);
+	p += ieLen;
+	len += ieLen;
+
+	ieLen = magicAddTo(msg, p);
+	p += ieLen;
+	len += ieLen;
+
+	ieLen = magicAddFrom(msg, p);
+	p += ieLen;
+	len += ieLen;
+
+	ieLen = magicAddEndHeaderLine(msg, p);
+	p += ieLen;
+	len += ieLen;
+	
+	//l
+
+	buf.s = temp;
+	buf.len = len;
+
+
+	
 	sl_run_callbacks(SLCB_REPLY_READY, msg, code, reason, &buf, &dst);
 
 	*(sl_timeout) = get_ticks_raw() + SL_RPL_WAIT_TIME;
