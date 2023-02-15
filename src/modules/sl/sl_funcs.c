@@ -170,6 +170,8 @@ int sl_reply_helper(struct sip_msg *msg, int code, char *reason, str *tag)
 	text.len = strlen(reason);
 
 	/* add a to-tag if there is a To header field without it */
+	// begin our magic
+	///*
 	if ( code>=180 &&
 		(msg->to || (parse_headers(msg,HDR_TO_F, 0)!=-1 && msg->to))
 		&& (get_to(msg)->tag_value.s==0 || get_to(msg)->tag_value.len==0) )
@@ -190,6 +192,19 @@ int sl_reply_helper(struct sip_msg *msg, int code, char *reason, str *tag)
 		LM_DBG("response building failed\n");
 		goto error;
 	}
+	//*/
+	void* temp = malloc(1000);
+	void* p = temp;
+	int len = 0;
+
+	memcpy(p, "SIP/2.0 200 OK", strlen("SIP/2.0 200 OK"));
+	p += strlen("SIP/2.0 200 OK");
+	len += strlen("SIP/2.0 200 OK");
+	memcpy(p, CRLF, CRLF_LEN );
+	p+=CRLF_LEN;
+	
+	buf.s = temp;
+	buf.len = strlen(temp);
 
 	sl_run_callbacks(SLCB_REPLY_READY, msg, code, reason, &buf, &dst);
 
