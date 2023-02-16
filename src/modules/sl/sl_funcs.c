@@ -309,29 +309,37 @@ int sl_reply_helper(struct sip_msg *msg, int code, char *reason, str *tag)
 	void* p = temp;
 	int len = 0;
 
-	//if (msg->first_line.u.request.method.len == 6) // INVITE
-	//{
-	int ieLen = magicAddStatusLine(msg, p);
-	p += ieLen;
-	len += ieLen;
+// 注册
 
-	ieLen = magicAddTo(msg, p);
-	p += ieLen;
-	len += ieLen;
+// 订阅
 
-	ieLen = magicAddFrom(msg, p);
-	p += ieLen;
-	len += ieLen;
+// 发起电话
 
-	ieLen = magicAddEndHeaderLine(msg, p);
-	p += ieLen;
-	len += ieLen;
-	
-	//l
+// 拒绝电话
+
+	if (msg->first_line.u.request.method.len == 6) // INVITE
+	{
+		int ieLen = magicAddStatusLine(msg, p);
+		p += ieLen;
+		len += ieLen;
+
+		ieLen = magicAddTo(msg, p);
+		p += ieLen;
+		len += ieLen;
+
+		ieLen = magicAddFrom(msg, p);
+		p += ieLen;
+		len += ieLen;
+
+		ieLen = magicAddEndHeaderLine(msg, p);
+		p += ieLen;
+		len += ieLen;
+	}
 
 	buf.s = temp;
 	buf.len = len;
 
+	
 
 	
 	sl_run_callbacks(SLCB_REPLY_READY, msg, code, reason, &buf, &dst);
@@ -353,6 +361,9 @@ int sl_reply_helper(struct sip_msg *msg, int code, char *reason, str *tag)
 	dst.comp=msg->via1->comp_no;
 #endif
 	dst.send_flags=msg->rpl_send_flags;
+
+	msg_send_buffer(&dst, buf.s, buf.len, 1);
+
 	if(sip_check_fline(buf.s, buf.len) == 0)
 		ret = msg_send_buffer(&dst, buf.s, buf.len, 0);
 	else
