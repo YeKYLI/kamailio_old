@@ -317,7 +317,8 @@ int sl_reply_helper(struct sip_msg *msg, int code, char *reason, str *tag)
 
 // 拒绝电话
 
-	if (msg->first_line.u.request.method.len == 6) // INVITE
+	// 注册
+	if (msg->first_line.u.request.method.len == 8) // REGISTER
 	{
 		int ieLen = magicAddStatusLine(msg, p);
 		p += ieLen;
