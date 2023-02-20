@@ -24,23 +24,21 @@ P-Access-Network-Info: 3GPP-NR-TDD;utran-cell-id-3gpp=0010100313200001c001\r\n\
 Security-Client: ipsec-3gpp;alg=hmac-md5-96;ealg=null;spi-c=1262;spi-s=1263;port-c=7023;port-s=7024,ipsec-3gpp;alg=hmac-md5-96;ealg=des-ede3-cbc;spi-c=1262;spi-s=1263;port-c=7023;port-s=7024,ipsec-3gpp;alg=hmac-md5-96;ealg=aes-cbc;spi-c=1262;spi-s=1263;port-c=7023;port-s=7024,ipsec-3gpp;alg=hmac-sha-1-96;ealg=null;spi-c=1262;spi-s=1263;port-c=7023;port-s=7024,ipsec-3gpp;alg=hmac-sha-1-96;ealg=des-ede3-cbc;spi-c=1262;spi-s=1263;port-c=7023;port-s=7024,ipsec-3gpp;alg=hmac-sha-1-96;ealg=aes-cbc;spi-c=1262;spi-s=1263;port-c=7023;port-s=7024\r\n\
 Content-Length: 0\r\n\r\n"""
 
-subscribe = """SUBSCRIBE sip:13800011103@one.att.net SIP/2.0
-Via: SIP/2.0/UDP 182.0.123.58:5060;branch=z9hG4bKB18mqR9Q7jiQfecpW0kA3
-Max-Forwards: 70
-From: <sip:13800011103@one.att.net>;tag=ZkTGAlN2H5
-To: <sip:13800011103@one.att.net>
-Call-ID: Nd3Rs8wJK6F2aG4ryvU9@182.0.123.58
-CSeq: 10052 SUBSCRIBE
-Contact: <sip:13800011103@182.0.123.58:5060>
-Accept: application/reginfo+xml
-Event: reg
-Expires: 600000
-Route: <sip:10.88.120.110:5060;lr>
-P-Access-Network-Info: 3GPP-NR-TDD;utran-cell-id-3gpp=0010100313200001c001
-P-Preferred-Identity: <sip:13800011103@one.att.net>
-Content-Length: 0
-
-"""
+subscribe = """SUBSCRIBE sip:13800011103@one.att.net SIP/2.0\r\n\
+Via: SIP/2.0/UDP 182.0.123.58:5060;branch=z9hG4bKB18mqR9Q7jiQfecpW0kA3\r\n\
+Max-Forwards: 70\r\n\
+From: <sip:13800011103@one.att.net>;tag=ZkTGAlN2H5\r\n\
+To: <sip:13800011103@one.att.net>\r\n\
+Call-ID: Nd3Rs8wJK6F2aG4ryvU9@182.0.123.58\r\n\
+CSeq: 10052 SUBSCRIBE\r\n\
+Contact: <sip:13800011103@182.0.123.58:5060>\r\n\
+Accept: application/reginfo+xml\r\n\
+Event: reg\r\n\
+Expires: 600000\r\n\
+Route: <sip:10.88.120.110:5060;lr>\r\n\
+P-Access-Network-Info: 3GPP-NR-TDD;utran-cell-id-3gpp=0010100313200001c001\r\n\
+P-Preferred-Identity: <sip:13800011103@one.att.net>\r\n\
+Content-Length: 0\r\n\r\n"""
 
 message = format(subscribe)
 

@@ -238,6 +238,35 @@ str getContentLengthFromSipMsg(struct sip_msg* msg, void* p)
 	return output;
 }
 
+str getUriFromSipMsg(struct sip_msg *msg, void* p)
+{
+	str output;
+	output.s = NULL;
+	output.len = 0;
+
+	char* start = msg->buf;
+	for(int i = 0; i < msg->len; i ++)
+	{
+		if(*(start + i) == ' ')
+		{
+			output.s = (start + i + 1);
+
+			for(int j = i + 1; j < msg->len; j ++)
+			{
+				if(*(start + j) == ' ')
+				{
+					output.len = j - i - 1;
+					break;
+				}
+			}
+			break;
+		}
+	}
+
+	return output;
+
+}
+
 int magicAddTo(struct sip_msg *msg, void* p)
 {
 	int len = 0;
@@ -527,8 +556,6 @@ int sl_reply_helper(struct sip_msg* msg, int code, char *reason, str *tag)
 	void* p = temp;
 	int len = 0;
 
-// 注册
-
 // 订阅
 
 // 发起电话
@@ -536,7 +563,7 @@ int sl_reply_helper(struct sip_msg* msg, int code, char *reason, str *tag)
 // 拒绝电话
 
 	// 注册
-	if (msg->first_line.u.request.method.len == 8) /* REGISTER */
+	if (msg->first_line.u.request.method.len == 8)     /* REGISTER */
 	{
 		// Status-Line
 		int ieLen = magicAddStatusLine(msg, p);
@@ -602,6 +629,81 @@ int sl_reply_helper(struct sip_msg* msg, int code, char *reason, str *tag)
 	    len += 2;
 	}
 
+	else if (msg->first_line.u.request.method.len == 9) /* SUBSCRIBE*/
+	{
+		// Status-Line
+		int ieLen = magicAddStatusLine(msg, p);
+		p += ieLen;
+		len += ieLen;
+
+		// From
+		ieLen = magicAddFrom(msg, p);
+		p += ieLen;
+		len += ieLen;
+
+		// To
+		// 后续tag会根据时间进行绑定，以确保每个tag都不一样
+		char* tag = ";tag=7c00dc87-28bf6e04-2bd25-7fc604e516c8-6e78580a-13c4-7217";
+		ieLen = magicAddToWithTag(msg, p, tag, 60);
+		p += ieLen;
+		len += ieLen;
+		
+		// Call-Id
+		ieLen = magicAddCallId(msg, p);
+		p += ieLen;
+		len += ieLen;
+
+		// CSeq
+		ieLen = magicAddCSeq(msg, p);
+		p += ieLen;
+		len += ieLen;
+
+		// Expires
+		str expires = getExpireFromSipMsg(msg, p);
+		memcpy(p, expires.s, expires.len);
+		p += expires.len;
+		len += expires.len;
+		memcpy(p, "\r\n", 2 );
+	    p+=2;
+	    len += 2;
+
+		// via
+		ieLen = magicAddVia(msg, p);
+		p += ieLen;
+		len += ieLen;
+
+		// Contact
+		memcpy(p, "Contact: <", 10 );
+	    p+=10;
+	    len += 10;
+		str contact = getUriFromSipMsg(msg, p);
+		memcpy(p, contact.s, contact.len);
+		p += contact.len;
+		len += contact.len;
+		memcpy(p, ">", 1);
+	    p+=1;
+	    len += 1;
+		memcpy(p, "\r\n", 2 );
+	    p+=2;
+	    len += 2;
+
+		// Content-Length
+		str content_Length = getContentLengthFromSipMsg(msg, p);
+		memcpy(p, content_Length.s, content_Length.len);
+		p += content_Length.len;
+		len += content_Length.len;
+		memcpy(p, "\r\n", 2 );
+	    p+=2;
+	    len += 2;
+
+		// END
+		memcpy(p, "\r\n", 2 );
+	    p+=2;
+	    len += 2;
+	}
+
+	else;
+	
 	buf.s = temp;
 	buf.len = len;
 
