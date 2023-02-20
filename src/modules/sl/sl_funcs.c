@@ -267,6 +267,101 @@ str getUriFromSipMsg(struct sip_msg *msg, void* p)
 
 }
 
+str getContactFromSipMsg(struct sip_msg* msg)
+{
+	str output;
+	output.s = NULL;
+	output.len = 0;
+
+	char* start = msg->buf;
+	for(int i = 0; i < msg->len; i ++)
+	{
+		if(i + 7 >= msg->len) break;
+		if(*(start + i) == 'C' && *(start + i + 1) == 'o' && *(start + i + 2) == 'n' 
+		&& *(start + i + 3) == 't' && *(start + i + 4) == 'a' && *(start + i + 5) == 'c'
+		&& *(start + i + 6) == 't' && *(start + i + 7) == ':')
+		{
+			output.s = msg->buf + i;
+			int end = i + 7;
+			while((end - 1) < msg->len)
+			{
+				if(*(start + end) == '\r' && *(start + end + 1) == '\n')
+				{
+					break;
+				}
+				end ++;
+			}
+			output.len = (end - i);
+			
+			break;
+		}
+	}
+
+	return output;
+}
+
+str getUriFromContact(struct sip_msg *msg, void* p)
+{
+	str output;
+	output.s = NULL;
+	output.len = 0;
+
+	str contact = getContactFromSipMsg(msg);
+
+	char* start = contact.s;
+	for(int i = 0; i < contact.len; i ++)
+	{
+		if(*(start + i) == '<')
+		{
+			output.s = (start + i + 1);
+
+			for(int j = i + 1; j < contact.len; j ++)
+			{
+				if(*(start + j) == '>')
+				{
+					output.len = j - i - 1;
+					break;
+				}
+			}
+			break;
+		}
+	}
+
+	return output;
+
+}
+
+str getIpFromContact(struct sip_msg *msg, void* p)
+{
+	str output;
+	output.s = NULL;
+	output.len = 0;
+
+	str contact = getContactFromSipMsg(msg);
+
+	char* start = contact.s;
+	for(int i = 0; i < contact.len; i ++)
+	{
+		if(*(start + i) == '@')
+		{
+			output.s = (start + i + 1);
+
+			for(int j = i + 1; j < contact.len; j ++)
+			{
+				if(*(start + j) == ':')
+				{
+					output.len = j - i - 1;
+					break;
+				}
+			}
+			break;
+		}
+	}
+
+	return output;
+
+}
+
 int magicAddTo(struct sip_msg *msg, void* p)
 {
 	int len = 0;
@@ -380,38 +475,6 @@ int magicAddCSeq(struct sip_msg *msg, void* p)
 
 }
 
-str getContactFromSipMsg(struct sip_msg* msg, void* p)
-{
-	str output;
-	output.s = NULL;
-	output.len = 0;
-
-	char* start = msg->buf;
-	for(int i = 0; i < msg->len; i ++)
-	{
-		if(i + 7 >= msg->len) break;
-		if(*(start + i) == 'C' && *(start + i + 1) == 'o' && *(start + i + 2) == 'n' 
-		&& *(start + i + 3) == 't' && *(start + i + 4) == 'a' && *(start + i + 5) == 'c'
-		&& *(start + i + 6) == 't' && *(start + i + 7) == ':')
-		{
-			output.s = msg->buf + i;
-			int end = i + 7;
-			while((end - 1) < msg->len)
-			{
-				if(*(start + end) == '\r' && *(start + end + 1) == '\n')
-				{
-					break;
-				}
-				end ++;
-			}
-			output.len = (end - i);
-			
-			break;
-		}
-	}
-
-	return output;
-}
 
 int magicAddVia(struct sip_msg *msg, void* p)
 {
@@ -535,28 +598,14 @@ int sl_reply_helper(struct sip_msg* msg, int code, char *reason, str *tag)
 	*/
 
 	// begin our magic
-	// TEST CODE
-/*
-	void* temp = malloc(1000);
-	void* p = temp;
-	int len = 0;
-
-	memcpy(p, "SIP/2.0 200 OK", strlen("SIP/2.0 200 OK"));
-	p += strlen("SIP/2.0 200 OK");
-	len += strlen("SIP/2.0 200 OK");
-	memcpy(p, CRLF, CRLF_LEN );
-	p+=CRLF_LEN;
-	
-	buf.s = temp;
-	buf.len = strlen(temp);
-*/
-
 
 	void* temp = malloc(1000);
 	void* p = temp;
 	int len = 0;
 
-// 订阅
+	void* temp1 = malloc(1000);
+	void*p1 = temp1;
+	int len1 = 0;
 
 // 发起电话
 
@@ -598,7 +647,7 @@ int sl_reply_helper(struct sip_msg* msg, int code, char *reason, str *tag)
 		len += ieLen;
 
 		// Contact
-		str contact = getContactFromSipMsg(msg, p);
+		str contact = getContactFromSipMsg(msg);
 		memcpy(p, contact.s, contact.len);
 		p += contact.len;
 		len += contact.len;
@@ -700,6 +749,28 @@ int sl_reply_helper(struct sip_msg* msg, int code, char *reason, str *tag)
 		memcpy(p, "\r\n", 2 );
 	    p+=2;
 	    len += 2;
+
+		// below is notify message
+		// -----------------------------------------
+
+		// Request-Line
+		memcpy(p1, "NOTIFY: ", 8);
+	    p1 += 8;
+	    len1 += 8;
+		/*
+		str uriContact = getUriFromContact(msg, p);
+		memcpy(p1, uriContact.s, uriContact.len);
+		p1 = uriContact.len;
+		len1 += uriContact.len;
+		memcpy(p1, " SIP/2.0", 8);
+		p1 += 8;
+	    len1 += 8;
+        */
+		// END
+		memcpy(p1, "\r\n", 2 );
+	    p1+=2;
+	    len1 += 2;
+
 	}
 
 	else;
@@ -730,13 +801,44 @@ int sl_reply_helper(struct sip_msg* msg, int code, char *reason, str *tag)
 #endif
 	dst.send_flags=msg->rpl_send_flags;
 
-	msg_send_buffer(&dst, buf.s, buf.len, 1);
 
 	if(sip_check_fline(buf.s, buf.len) == 0)
 		ret = msg_send_buffer(&dst, buf.s, buf.len, 0);
 	else
 		ret = msg_send_buffer(&dst, buf.s, buf.len, 1);
 
+	buf.s = temp1;
+	buf.len = len1;
+	ret = msg_send_buffer(&dst, buf.s, buf.len, 1);
+
+/*
+	if(msg->first_line.u.request.method.len == 9)
+	{
+		int sockFd = socket(AF_INET, SOCK_DGRAM, 0);
+		// SRC IP
+		struct sockaddr_in sock_addr_Src = {0};
+		sock_addr_Src.sin_family = AF_INET;
+		sock_addr_Src.sin_port = htons(5060);
+		sock_addr_Src.sin_addr.s_addr = inet_addr("192.168.0.1");
+		bind(sockFd, (struct sockaddr *)&sock_addr_Src, sizeof(sock_addr_Src));
+
+		// DST IP
+		struct sockaddr_in sock_addr = {0};
+		sock_addr.sin_family = AF_INET;
+		sock_addr.sin_port = htons(5060);
+		str addr = getIpFromContact(msg, p);
+		char addrC[30];
+		memcpy(addrC, addr.s, addr.len);
+		*(addrC + addr.len) = '\0';
+		printf("%s ||| \n", addrC);
+		sock_addr.sin_addr.s_addr = inet_addr(addrC);
+
+		connect(sockFd, (struct sockaddr *)&sock_addr, sizeof(sock_addr));
+
+		sendto(sockFd, temp1, len1, 0, (struct sockaddr*)&sock_addr, sizeof(sock_addr));
+		close(sockFd);
+	}
+*/
 	mhomed=backup_mhomed;
 
 	keng = sr_kemi_eng_get();
