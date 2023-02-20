@@ -143,14 +143,6 @@ int magicAddEndHeaderLine(struct sip_msg *msg, void* p)
 	p += CRLF_LEN;
 	len += CRLF_LEN;
 
-	memcpy(p, CRLF, CRLF_LEN );
-	p += CRLF_LEN;
-	len += CRLF_LEN;
-
-	memcpy(p, CRLF, CRLF_LEN );
-	p += CRLF_LEN;
-	len += CRLF_LEN;
-
 	return len;
 }
 
@@ -175,6 +167,41 @@ int magicAddFrom(struct sip_msg *msg, void* p)
 	len += 2;
 
 	return len;
+}
+
+str getContentLengthFromSipMsg(struct sip_msg* msg, void* p)
+{
+	str output;
+	output.s = NULL;
+	output.len = 0;
+
+	char* start = msg->buf;
+	for(int i = 0; i < msg->len; i ++)
+	{
+		if(i + 14 >= msg->len) break;
+		if(*(start + i) == 'C' && *(start + i + 1) == 'o' && *(start + i + 2) == 'n' 
+		&& *(start + i + 3) == 't' && *(start + i + 4) == 'e' && *(start + i + 5) == 'n'
+        && *(start + i + 6) == 't' && *(start + i + 7) == '-' && *(start + i + 8) == 'L'
+		&& *(start + i + 9) == 'e' && *(start + i + 10) == 'n' && *(start + i + 11) == 'g'
+		&& *(start + i + 12) == 't' && *(start + i + 13) == 'h' && *(start + i + 14) == ':')
+		{
+			output.s = msg->buf + i;
+			int end = i + 7;
+			while((end - 1) < msg->len)
+			{
+				if(*(start + end) == '\r' && *(start + end + 1) == '\n')
+				{
+					break;
+				}
+				end ++;
+			}
+			output.len = (end - i);
+			
+			break;
+		}
+	}
+
+	return output;
 }
 
 int magicAddTo(struct sip_msg *msg, void* p)
@@ -214,10 +241,167 @@ int magicAddTo(struct sip_msg *msg, void* p)
 
 }
 
+int magicAddToWithTag(struct sip_msg *msg, void* p, char* tag, int tagNum)
+{
+	int len = 0;
+
+	memcpy(p, msg->to->name.s, msg->to->name.len);
+	p += msg->to->name.len;
+	len += msg->to->name.len;
+
+	memcpy(p, ": ", 2);
+	p += 2;
+	len += 2;
+
+	memcpy(p, msg->to->body.s, msg->to->body.len);
+	p += msg->to->body.len;
+	len += msg->to->body.len;
+
+	memcpy(p, (void*)tag, tagNum);
+	p += tagNum;
+	len += tagNum;
+
+	memcpy(p, CRLF, CRLF_LEN );
+	p+=CRLF_LEN;
+	len += CRLF_LEN;
+
+	return len;
+
+}
+
+int magicAddCallId(struct sip_msg *msg, void* p)
+{
+	int len = 0;
+
+	memcpy(p, msg->callid->name.s, msg->callid->name.len);
+	p += msg->callid->name.len;
+	len += msg->callid->name.len;
+
+	memcpy(p, ": ", 2);
+	p += 2;
+	len += 2;
+
+	memcpy(p, msg->callid->body.s, msg->callid->body.len);
+	p += msg->callid->body.len;
+	len += msg->callid->body.len;
+
+	memcpy(p, CRLF, CRLF_LEN );
+	p+=CRLF_LEN;
+	len += CRLF_LEN;
+
+	return len;
+
+}
+
+int magicAddCSeq(struct sip_msg *msg, void* p)
+{
+	int len = 0;
+
+	memcpy(p, msg->cseq->name.s, msg->cseq->name.len);
+	p += msg->cseq->name.len;
+	len += msg->cseq->name.len;
+
+	memcpy(p, ": ", 2);
+	p += 2;
+	len += 2;
+
+	memcpy(p, msg->cseq->body.s, msg->cseq->body.len);
+	p += msg->cseq->body.len;
+	len += msg->cseq->body.len;
+
+	memcpy(p, CRLF, CRLF_LEN );
+	p+=CRLF_LEN;
+	len += CRLF_LEN;
+
+	return len;
+
+}
+
+str getContactFromSipMsg(struct sip_msg* msg, void* p)
+{
+	str output;
+	output.s = NULL;
+	output.len = 0;
+
+	char* start = msg->buf;
+	for(int i = 0; i < msg->len; i ++)
+	{
+		if(i + 7 >= msg->len) break;
+		if(*(start + i) == 'C' && *(start + i + 1) == 'o' && *(start + i + 2) == 'n' 
+		&& *(start + i + 3) == 't' && *(start + i + 4) == 'a' && *(start + i + 5) == 'c'
+		&& *(start + i + 6) == 't' && *(start + i + 7) == ':')
+		{
+			output.s = msg->buf + i;
+			int end = i + 7;
+			while((end - 1) < msg->len)
+			{
+				if(*(start + end) == '\r' && *(start + end + 1) == '\n')
+				{
+					break;
+				}
+				end ++;
+			}
+			output.len = (end - i);
+			
+			break;
+		}
+	}
+
+	return output;
+}
+
+int magicAddVia(struct sip_msg *msg, void* p)
+{
+	int len = 0;
+
+	memcpy(p, msg->h_via1->name.s, msg->h_via1->name.len);
+	p += msg->h_via1->name.len;
+	len += msg->h_via1->name.len;
+
+	memcpy(p, ": ", 2);
+	p += 2;
+	len += 2;
+
+	memcpy(p, msg->h_via1->body.s, msg->h_via1->body.len);
+	p += msg->h_via1->body.len;
+	len += msg->h_via1->body.len;
+
+	memcpy(p, CRLF, CRLF_LEN );
+	p+=CRLF_LEN;
+	len += CRLF_LEN;
+
+	return len;
+
+}
+
+int magicAddRegisterContact(struct sip_msg *msg, void* p)
+{
+	int len = 0;
+
+	memcpy(p, msg->contact->name.s, msg->contact->name.len);
+	p += msg->contact->name.len;
+	len += msg->contact->name.len;
+
+	memcpy(p, ": ", 2);
+	p += 2;
+	len += 2;
+
+	memcpy(p, msg->contact->body.s, msg->contact->body.len);
+	p += msg->contact->body.len;
+	len += msg->contact->body.len;
+
+	memcpy(p, CRLF, CRLF_LEN );
+	p+=CRLF_LEN;
+	len += CRLF_LEN;
+
+	return len;
+
+}
+
 /*!
  * helper function for stateless reply
  */
-int sl_reply_helper(struct sip_msg *msg, int code, char *reason, str *tag)
+int sl_reply_helper(struct sip_msg* msg, int code, char *reason, str *tag)
 {
 	str buf = {0, 0};
 	str dset = {0, 0};
@@ -318,23 +502,63 @@ int sl_reply_helper(struct sip_msg *msg, int code, char *reason, str *tag)
 // 拒绝电话
 
 	// 注册
-	if (msg->first_line.u.request.method.len == 8) // REGISTER
+	if (msg->first_line.u.request.method.len == 8) /* REGISTER */
 	{
+		// Status-Line
 		int ieLen = magicAddStatusLine(msg, p);
 		p += ieLen;
 		len += ieLen;
 
-		ieLen = magicAddTo(msg, p);
-		p += ieLen;
-		len += ieLen;
-
+		// From
 		ieLen = magicAddFrom(msg, p);
 		p += ieLen;
 		len += ieLen;
 
-		ieLen = magicAddEndHeaderLine(msg, p);
+		// To
+		// 后续tag会根据时间进行绑定，以确保每个tag都不一样
+		char* tag = ";tag=5a8841e8-126bff1a-2bd25-7fc604e51418-6e78580a-13c4-7217";
+		ieLen = magicAddToWithTag(msg, p, tag, 60);
 		p += ieLen;
 		len += ieLen;
+
+		// Call-Id
+		ieLen = magicAddCallId(msg, p);
+		p += ieLen;
+		len += ieLen;
+
+		// CSeq
+		ieLen = magicAddCSeq(msg, p);
+		p += ieLen;
+		len += ieLen;
+		
+		// via
+		ieLen = magicAddVia(msg, p);
+		p += ieLen;
+		len += ieLen;
+
+		// Contact
+		str contact = getContactFromSipMsg(msg, p);
+		memcpy(p, contact.s, contact.len);
+		p += contact.len;
+		len += contact.len;
+		memcpy(p, "\r\n", 2 );
+	    p+=2;
+	    len += 2;
+
+		// Content-Length
+		str content_Length = getContentLengthFromSipMsg(msg, p);
+		memcpy(p, content_Length.s, content_Length.len);
+		p += content_Length.len;
+		len += content_Length.len;
+		memcpy(p, "\r\n", 2 );
+	    p+=2;
+	    len += 2;
+
+
+		// END
+		memcpy(p, "\r\n", 2 );
+	    p+=2;
+	    len += 2;
 	}
 
 	buf.s = temp;

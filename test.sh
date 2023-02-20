@@ -4,6 +4,6 @@ sudo make all
 
 sudo make install 
 
-/build/sbin/kamailio -f doc/ims/test.cfg
+./build/sbin/kamailio -f doc/ims/test.cfg
 
 python doc/ims/test.py 
