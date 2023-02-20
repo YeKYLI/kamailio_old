@@ -169,6 +169,40 @@ int magicAddFrom(struct sip_msg *msg, void* p)
 	return len;
 }
 
+str getExpireFromSipMsg(struct sip_msg* msg, void* p)
+{
+	str output;
+	output.s = NULL;
+	output.len = 0;
+
+	char* start = msg->buf;
+	for(int i = 0; i < msg->len; i ++)
+	{
+		if(i + 7 >= msg->len) break;
+		if(*(start + i) == 'E' && *(start + i + 1) == 'x' && *(start + i + 2) == 'p' 
+		&& *(start + i + 3) == 'i' && *(start + i + 4) == 'r' && *(start + i + 5) == 'e'
+        && *(start + i + 6) == 's' && *(start + i + 7) == ':')
+		{
+			output.s = msg->buf + i;
+			int end = i + 7;
+			while((end - 1) < msg->len)
+			{
+				if(*(start + end) == '\r' && *(start + end + 1) == '\n')
+				{
+					break;
+				}
+				end ++;
+			}
+			output.len = (end - i);
+			
+			break;
+		}
+	}
+
+	return output;
+}
+
+
 str getContentLengthFromSipMsg(struct sip_msg* msg, void* p)
 {
 	str output;
@@ -541,6 +575,13 @@ int sl_reply_helper(struct sip_msg* msg, int code, char *reason, str *tag)
 		memcpy(p, contact.s, contact.len);
 		p += contact.len;
 		len += contact.len;
+		memcpy(p, ";expires=", 9); // ;
+		p += 9;
+		len += 9;
+		str expires = getExpireFromSipMsg(msg, p); // Expires
+		memcpy(p, expires.s + 9, expires.len - 9);
+		p += expires.len - 9;
+		len += expires.len - 9;
 		memcpy(p, "\r\n", 2 );
 	    p+=2;
 	    len += 2;
