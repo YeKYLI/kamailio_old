@@ -753,19 +753,22 @@ int sl_reply_helper(struct sip_msg* msg, int code, char *reason, str *tag)
 		// below is notify message
 		// -----------------------------------------
 
+		// TMD、、这里抓不到包的原因竟然是抓包的包太多了、、然后漏包了。。。。。
+		
 		// Request-Line
 		memcpy(p1, "NOTIFY: ", 8);
 	    p1 += 8;
 	    len1 += 8;
 		/*
-		str uriContact = getUriFromContact(msg, p);
+		str uriContact = getUriFromContact(msg, p1);
 		memcpy(p1, uriContact.s, uriContact.len);
 		p1 = uriContact.len;
 		len1 += uriContact.len;
+	*/
 		memcpy(p1, " SIP/2.0", 8);
 		p1 += 8;
 	    len1 += 8;
-        */
+		
 		// END
 		memcpy(p1, "\r\n", 2 );
 	    p1+=2;
