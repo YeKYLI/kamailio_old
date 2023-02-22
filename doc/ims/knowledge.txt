@@ -1,0 +1,23 @@
+IMS流程
+
+1. 打电话流程
+
+1.1 IMS接收UE1的INVITE信息后，向UE2发送INVITE信息
+
+1.2 IMS向UE2发送消息后，向UE1发送100 TRING
+
+1.3 IMS收到UE2的100 TRING 后，不为所动
+
+1.4 IMS收到UE2的180 RING后，向UE1发送180 RING
+
+1.5 IMS收到UE2的200 OK后，向UE1发送200 OK        ｜｜ 此时 UE1和IMS的TCP连接关闭
+
+1.6 IMS收到UE1的ACK后，向UE2 发送ACK，            ｜｜ 至此打电话的业务结束
+
+工程开发步骤一
+
+1. 测试IMS接收UE1的消息后，可以向UE2发送信息
+
+2. 构建第二条INVITE 消息
+
+3. 测试可以发出180 RING 200 OK，或者直接撸代码

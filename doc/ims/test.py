@@ -40,6 +40,80 @@ P-Access-Network-Info: 3GPP-NR-TDD;utran-cell-id-3gpp=0010100313200001c001\r\n\
 P-Preferred-Identity: <sip:13800011103@one.att.net>\r\n\
 Content-Length: 0\r\n\r\n"""
 
+invite = """INVITE tel:13800011103;phone-context=one.att.net SIP/2.0\r\n\
+Via: SIP/2.0/TCP 182.0.123.56:5060;branch=z9hG4bKb4MiHkghekvemEcWZotV2Pm9uu.\r\n\
+Max-Forwards: 70\r\n\
+From: <sip:13800011101@one.att.net>;tag=X6E3R9v\r\n\
+To: <tel:13800011103;phone-context=one.att.net>\r\n\
+Call-ID: 0rSzxKYZqGFRahidYb8I3Dc3doGY@182.0.123.56\r\n\
+CSeq: 33302 INVITE\r\n\
+Contact: <sip:13800011101@182.0.123.56:5060>;+g.3gpp.srvcc-alerting;+g.3gpp.mid-call;+g.3gpp.ps2cs-srvcc-orig-pre-alerting;+g.3gpp.icsi-ref="urn%3Aurn-7%3A3gpp-service.ims.icsi.mmtel";audio;video\r\n\
+Accept: application/sdp, application/3gpp-ims+xml\r\n\
+Allow: INVITE, CANCEL, BYE, ACK, REFER, NOTIFY, MESSAGE, INFO, PRACK, UPDATE, OPTIONS\r\n\
+Route: <sip:10.88.120.110:5060;lr>\r\n\
+Supported: timer,replaces,100rel,precondition,histinfo,199\r\n\
+P-Access-Network-Info: 3GPP-NR-TDD;utran-cell-id-3gpp=0010100313200001c001\r\n\
+P-Preferred-Service: urn:urn-7:3gpp-service.ims.icsi.mmtel\r\n\
+P-Early-Media: supported\r\n\
+Accept-Contact: *;+g.3gpp.icsi-ref="urn%3Aurn-7%3A3gpp-service.ims.icsi.mmtel";video\r\n\
+P-Preferred-Identity: <sip:13800011101@one.att.net>\r\n\
+Content-Type: application/sdp\r\n\
+Content-Length: 1466\r\n\
+
+v=0\r\n\
+o=SPRD-IMS-UE 678599293 678599293 IN IP4 182.0.123.56\r\n\
+s=-\r\n\
+c=IN IP4 182.0.123.56\r\n\
+b=AS:1002\r\n\
+b=RS:8600\r\n\
+b=RR:8000\r\n\
+t=0 0\r\n\
+m=audio 59000 RTP/AVP 96 98 100 110 112 101 103\r\n\
+b=AS:42\r\n\
+b=RS:600\r\n\
+b=RR:2000\r\n\
+a=rtpmap:96 EVS/16000\r\n\
+a=fmtp:96 br=5.9-24.4;bw=nb-wb;max-red=0\r\n\
+a=rtpmap:98 AMR-WB/16000\r\n\
+a=fmtp:98 mode-change-capability=2;max-red=0\r\n\
+a=rtpmap:100 AMR-WB/16000\r\n\
+a=fmtp:100 octet-align=1;mode-change-capability=2;max-red=0\r\n\
+a=rtpmap:110 AMR/8000\r\n\
+a=fmtp:110 mode-change-capability=2;max-red=0\r\n\
+a=rtpmap:112 AMR/8000\r\n\
+a=fmtp:112 octet-align=1;mode-change-capability=2;max-red=0\r\n\
+a=rtpmap:101 telephone-event/16000\r\n\
+a=fmtp:101 0-15\r\n\
+a=rtpmap:103 telephone-event/8000\r\n\
+a=fmtp:103 0-15\r\n\
+a=ptime:20\r\n\
+a=maxptime:240\r\n\
+a=sendrecv\r\n\
+a=curr:qos local none\r\n\
+a=curr:qos remote none\r\n\
+a=des:qos mandatory local sendrecv\r\n\
+a=des:qos optional remote sendrecv\r\n\
+m=video 60000 RTP/AVP 104 105\r\n\
+b=AS:960\r\n\
+b=RS:8000\r\n\
+b=RR:6000\r\n\
+a=tcap:1 RTP/AVPF\r\n\
+a=pcfg:1 t=1\r\n\
+a=rtcp-fb:* nack\r\n\
+a=rtcp-fb:* nack pli\r\n\
+a=rtcp-fb:* ccm tmmbr\r\n\
+a=rtcp-fb:* ccm fir\r\n\
+a=rtpmap:104 H264/90000\r\n\
+a=fmtp:104 profile-level-id=42C01E;packetization-mode=1;sprop-parameter-sets=Z0LAHukDwKJALCIRqA==,aM48gA==\r\n\
+a=rtpmap:105 H264/90000\r\n\
+a=fmtp:105 profile-level-id=42C01E;packetization-mode=0;sprop-parameter-sets=Z0LAHukDwKJALCIRqA==,aM48gA==\r\n\
+a=extmap:5 urn:3gpp:video-orientation\r\n\
+a=sendrecv\r\n\
+a=curr:qos local none\r\n\
+a=curr:qos remote none\r\n\
+a=des:qos mandatory local sendrecv\r\n\
+a=des:qos optional remote sendrecv\r\n"""
+
 message = format(subscribe)
 
 ## udp client
@@ -54,11 +128,17 @@ tcpSock.connect((serverAddr, serverPort))
 #tcpSock.close()
 
 
-message = format(REGISTER)
+#message = format(REGISTER)
+#tcpSock.send(message)
+
+#message = format(subscribe)
+#udpSock.sendto(message, server_address)
+
+## test invite
+message = format(invite)
 tcpSock.send(message)
 
-message = format(subscribe)
-udpSock.sendto(message, server_address)
+exit
 
 
 

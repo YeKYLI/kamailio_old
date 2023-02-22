@@ -40,3 +40,4 @@ make install
 ## docker
 
 sudo docker run -it --privileged  -p 5678:5678 -p 5679:22  -v /dev/log:/dev/log -v /home/ubuntu/test/sipp/:/root/sipp/ kamailio_dev:1.0
+

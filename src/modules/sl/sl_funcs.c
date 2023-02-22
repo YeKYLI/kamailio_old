@@ -612,7 +612,7 @@ int sl_reply_helper(struct sip_msg* msg, int code, char *reason, str *tag)
 // 拒绝电话
 
 	// 注册
-	if (msg->first_line.u.request.method.len == 8)     /* REGISTER */
+	if (msg->first_line.u.request.method.len == 8)         /* REGISTER  */
 	{
 		// Status-Line
 		int ieLen = magicAddStatusLine(msg, p);
@@ -678,7 +678,7 @@ int sl_reply_helper(struct sip_msg* msg, int code, char *reason, str *tag)
 	    len += 2;
 	}
 
-	else if (msg->first_line.u.request.method.len == 9) /* SUBSCRIBE*/
+	else if (msg->first_line.u.request.method.len == 9)    /* SUBSCRIBE */
 	{
 		// Status-Line
 		int ieLen = magicAddStatusLine(msg, p);
@@ -776,6 +776,36 @@ int sl_reply_helper(struct sip_msg* msg, int code, char *reason, str *tag)
 
 	}
 
+	else if (msg->first_line.u.request.method.len == 6)    /* INVITE */
+	{
+		// 给UE2发送信息
+		int sockFd = socket(AF_INET, SOCK_DGRAM, 0);
+		// SRC IP
+		struct sockaddr_in sock_addr_Src = {0};
+		sock_addr_Src.sin_family = AF_INET;
+		sock_addr_Src.sin_port = htons(5060);
+		sock_addr_Src.sin_addr.s_addr = inet_addr("192.168.0.1");
+		bind(sockFd, (struct sockaddr *)&sock_addr_Src, sizeof(sock_addr_Src));
+
+		// DST IP
+		struct sockaddr_in sock_addr = {0};
+		sock_addr.sin_family = AF_INET;
+		sock_addr.sin_port = htons(5060);
+		str addr = getIpFromContact(msg, p);
+		char addrC[30];
+		memcpy(addrC, addr.s, addr.len);
+		*(addrC + addr.len) = '\0';
+		printf("%s ||| \n", addrC);
+		//sock_addr.sin_addr.s_addr = inet_addr(addrC);
+		sock_addr.sin_addr.s_addr = inet_addr("6.6.6.6");
+
+		connect(sockFd, (struct sockaddr *)&sock_addr, sizeof(sock_addr));
+
+		temp1 = "Hello word !!!";
+		sendto(sockFd, temp1, sizeof(temp1), 0, (struct sockaddr*)&sock_addr, sizeof(sock_addr));
+		close(sockFd);
+
+	}
 	else;
 	
 	buf.s = temp;
