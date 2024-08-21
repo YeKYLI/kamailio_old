@@ -40,3 +40,32 @@ make install
 ## docker
 
 sudo docker run -it --privileged  -p 5678:5678 -p 5679:22  -v /dev/log:/dev/log -v /home/ubuntu/test/sipp/:/root/sipp/ kamailio_dev:1.0
+
+
+# gdb -x .gdb
+
+!pkill kamailio
+
+file src/kamailio
+
+set args "-f" "/root/XG/src/kamailio/test.cfg"
+
+set follow-fork-mode child
+
+break main
+
+run
+
+# kamailio.cfg的运行机制
+
+# sip注册流程怎么去写、、仿照之前的流程写即可
+
+# 代码入库
+
+git clone 
+
+# 直接写注册流程的代码、这里直接仿照之前写的代码即可。。
+
+这里可以用gdb调流程、调试代码
+
+# 
